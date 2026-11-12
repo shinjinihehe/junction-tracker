@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Junction study · research tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;700;800;900&family=Overpass+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3EEE3; --paper-2:#EAE3D4; --card:#FBF8F1; --ink:#16181B; --ink-2:#4A4C50; --ink-3:#7C7B76;
+  --rule:#D9D1BF; --asphalt:#1B1C1F; --asphalt-2:#26282C; --line-y:#F2B33D; --line-w:#EDEAE2;
+  --knows:#2B67B0; --told:#B57F1F; --meets:#8E3B6E;
+  --go:#2F8F4E; --wait:#E9A23B; --stop:#CF3F2E; --off:#3A3C41;
+  --serif:"Newsreader",Georgia,serif; --sans:"Overpass",system-ui,sans-serif; --mono:"Overpass Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:rgba(27,28,31,.92);backdrop-filter:blur(8px);color:var(--line-w);border-bottom:3px solid var(--line-y)}
+nav .wrap{display:flex;align-items:center;gap:22px;height:52px}
+nav .brand{font-weight:900;letter-spacing:.02em;display:flex;align-items:center;gap:10px;white-space:nowrap}
+nav .brand i{width:22px;height:22px;border-radius:5px;background:var(--line-y);display:inline-grid;place-items:center;color:var(--asphalt);font-style:normal;font-size:13px;font-weight:900}
+nav .links{display:flex;gap:18px;margin-left:auto;font-size:14px;overflow-x:auto;scrollbar-width:none}
+nav .links a{text-decoration:none;opacity:.75;white-space:nowrap;padding:4px 0;border-bottom:2px solid transparent}
+nav .links a:hover{opacity:1;border-color:var(--line-y)}
+
+/* hero */
+.hero{background:var(--asphalt);color:var(--line-w);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.025) 46px 47px);pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding-top:64px;padding-bottom:56px;position:relative}
+.status-pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;border:1px solid rgba(255,255,255,.18);padding:6px 12px 6px 8px;border-radius:999px;color:#E6E2D8}
+.status-pill .dot{width:10px;height:10px;border-radius:50%;background:var(--wait);box-shadow:0 0 0 4px rgba(233,162,59,.18);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(233,162,59,0)}}
+.hero h1{font-weight:900;font-size:clamp(38px,5.4vw,68px);line-height:.98;letter-spacing:-.02em;margin:22px 0 18px}
+.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--line-y)}
+.hero p.lede{font-family:var(--serif);font-size:21px;line-height:1.45;color:#CFCAC0;max-width:36ch;margin:0 0 28px}
+.hero p.lede b{font-weight:500}
+.k-knows{color:#7DB0EE}.k-told{color:#F0C46B}.k-meets{color:#E08BC0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.12);margin-top:8px}
+.stat{padding:16px 14px 4px 0}
+.stat .n{font-family:var(--mono);font-weight:600;font-size:28px;line-height:1.1;color:#fff}
+.stat .n small{font-size:15px;color:#8F8C85;font-weight:400}
+.stat .l{font-size:12.5px;color:#9C988F;margin-top:4px}
+.junction{width:100%;max-width:440px;justify-self:center;filter:drop-shadow(0 30px 40px rgba(0,0,0,.35))}
+.car{transform-box:fill-box}
+.carA{animation:carA 10s cubic-bezier(.45,0,.3,1) infinite}
+.carB{animation:carB 10s cubic-bezier(.45,0,.3,1) infinite}
+.carC{animation:carC 10s cubic-bezier(.45,0,.3,1) infinite}
+@keyframes carA{0%{transform:translateX(-90px)}14%,24%{transform:translateX(0)}42%,100%{transform:translateX(420px)}}
+@keyframes carB{0%{transform:translateY(90px)}14%,44%{transform:translateY(0)}62%,100%{transform:translateY(-420px)}}
+@keyframes carC{0%{transform:translateX(90px)}14%,64%{transform:translateX(0)}84%,100%{transform:translateX(-420px)}}
+.sight{animation:sight 10s linear infinite}
+@keyframes sight{0%,12%{opacity:0}16%,60%{opacity:1}66%,100%{opacity:0}}
+.legend-cars{display:flex;gap:16px;justify-content:center;font-size:12.5px;color:#A9A59C;margin-top:6px;flex-wrap:wrap}
+.legend-cars span::before{content:"";display:inline-block;width:14px;height:7px;border-radius:2px;margin-right:6px;vertical-align:1px;background:currentColor}
+
+/* sections */
+section{padding:84px 0 20px}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:end;margin-bottom:34px}
+.sign{font-family:var(--sans);font-weight:900;font-size:15px;background:var(--ink);color:var(--paper);border-radius:8px;padding:10px 14px;line-height:1;box-shadow:inset 0 0 0 2px var(--ink),inset 0 0 0 4px var(--paper)}
+.sec-head h2{font-weight:800;font-size:clamp(28px,3.4vw,40px);letter-spacing:-.015em;line-height:1.05;margin:0}
+.sec-head p{grid-column:2;margin:6px 0 0;color:var(--ink-2);font-family:var(--serif);font-size:19px;max-width:60ch}
+
+/* route */
+.route{position:relative;padding-top:10px}
+.road{position:absolute;left:0;right:0;top:44px;height:34px;background:var(--asphalt);border-radius:4px}
+.road::after{content:"";position:absolute;left:12px;right:12px;top:16px;height:2px;background:repeating-linear-gradient(90deg,var(--line-y) 0 18px,transparent 18px 32px)}
+.road .done{position:absolute;left:0;top:0;bottom:0;background:var(--go);border-radius:4px 0 0 4px;width:0;transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
+.stops{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;position:relative}
+.stop{padding-top:0}
+.post{width:46px;height:46px;margin:21px 0 22px 6px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:14px;position:relative;z-index:2;border:3px solid var(--paper)}
+.stop.done .post{background:var(--go);color:#fff}
+.stop.now .post{background:var(--line-y);color:var(--asphalt);transform:scale(1.12);box-shadow:0 0 0 6px rgba(242,179,61,.28)}
+.stop.next .post{background:var(--card);color:var(--ink-3);border-color:var(--rule);outline:3px solid var(--paper)}
+.stop .nm{font-weight:800;font-size:17px;line-height:1.15}
+.stop .tag{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:4px 0 6px}
+.stop.done .tag{color:var(--go)}.stop.now .tag{color:#A86C0E}.stop.next .tag{color:var(--ink-3)}
+.stop .wh{font-size:14px;color:var(--ink-2);line-height:1.4}
+.stop .gate{margin-top:8px;font-size:12.5px;color:var(--ink-3);border-top:1px dashed var(--rule);padding-top:6px}
+.stop .gate b{font-weight:700;color:var(--ink-2)}
+.inside{margin-top:30px;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:start}
+.inside h3{margin:0 0 6px;font-size:19px;font-weight:800}
+.inside p{margin:0;color:var(--ink-2);font-size:14.5px}
+.tests{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.t{border:1px solid var(--rule);border-radius:9px;padding:9px 10px;background:#fff;font-size:12.5px;line-height:1.3;position:relative}
+.t b{font-family:var(--mono);font-weight:600;font-size:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.t b i{width:8px;height:8px;border-radius:50%;background:var(--rule)}
+.t.pass b i{background:var(--go)}.t.run b i{background:var(--wait)}.t.fail b i{background:var(--stop)}
+.t .where{display:block;color:var(--ink-3);font-family:var(--mono);font-size:10.5px;margin-top:4px;letter-spacing:.04em}
+.deadline{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;border-radius:999px;padding:5px 11px;border:1px solid var(--rule);background:var(--card);color:var(--ink-2)}
+.chip.hot{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* hypotheses */
+.pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
+.pillar-head{border-radius:14px;padding:20px 20px 18px;color:#fff;position:relative;overflow:hidden;min-height:150px}
+.pillar-head::after{content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;border:14px solid rgba(255,255,255,.12);border-radius:50%}
+.pillar-head .q{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.pillar-head h3{font-size:26px;font-weight:900;margin:6px 0 6px;line-height:1.05}
+.pillar-head p{margin:0;font-family:var(--serif);font-size:17px;line-height:1.35;opacity:.95;max-width:28ch}
+.p-knows .pillar-head{background:var(--knows)}.p-told .pillar-head{background:var(--told)}.p-meets .pillar-head{background:var(--meets)}
+.hyps{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+details.h{background:var(--card);border:1px solid var(--rule);border-radius:12px;transition:border-color .2s,transform .2s}
+details.h:hover{border-color:#C6BCA6;transform:translateY(-1px)}
+details.h[open]{border-color:var(--ink-3)}
+details.h summary{list-style:none;cursor:pointer;padding:15px 16px 14px;display:grid;grid-template-columns:1fr auto;gap:12px}
+details.h summary::-webkit-details-marker{display:none}
+.hid{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.hid b{font-family:var(--mono);font-weight:600;font-size:12.5px;padding:2px 7px;border-radius:5px;border:1.5px solid currentColor}
+.p-knows .hid b{color:var(--knows)}.p-told .hid b{color:var(--told)}.p-meets .hid b{color:var(--meets)}
+.headline{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:2px 7px;border-radius:4px}
+.sec{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.claim{font-family:var(--serif);font-size:18px;line-height:1.35;color:var(--ink)}
+.res{margin-top:9px;font-size:13px;color:var(--ink-3);display:flex;gap:6px;align-items:baseline}
+.res b{color:var(--ink-2);font-weight:700}
+.light{width:20px;background:#202226;border-radius:7px;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:3px;align-self:start;margin-top:2px}
+.light i{width:11px;height:11px;border-radius:50%;background:#3A3C41}
+.light.rejected i:nth-child(1){background:var(--stop);box-shadow:0 0 8px var(--stop)}
+.light.testing i:nth-child(2){background:var(--wait);box-shadow:0 0 8px var(--wait);animation:blink 1.6s ease-in-out infinite}
+.light.mixed i:nth-child(2){background:var(--wait);box-shadow:0 0 8px var(--wait)}
+.light.supported i:nth-child(3){background:var(--go);box-shadow:0 0 8px var(--go)}
+@keyframes blink{50%{opacity:.35}}
+.more{padding:0 16px 16px;border-top:1px dashed var(--rule);margin-top:-2px}
+.more dl{margin:12px 0 0;display:grid;grid-template-columns:96px 1fr;gap:8px 12px;font-size:14px}
+.more dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+.more dd{margin:0;color:var(--ink-2)}
+.more dd.if-yes{color:#235F37}.more dd.if-no{color:#8E2E22}
+.lightkey{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin:-14px 0 26px}
+.lightkey span{display:inline-flex;align-items:center;gap:7px}
+.lightkey i{width:11px;height:11px;border-radius:50%;display:inline-block}
+
+/* experiments */
+.exps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.exp{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:20px 22px 20px 26px;position:relative;overflow:hidden}
+.exp::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--c)}
+.exp-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.plate{font-weight:900;font-size:13px;background:var(--c);color:#fff;border-radius:6px;padding:5px 9px;line-height:1}
+.exp h3{margin:12px 0 4px;font-size:22px;font-weight:800;line-height:1.15}
+.exp .q{font-family:var(--serif);font-size:17px;color:var(--ink-2);margin:0 0 14px;line-height:1.35}
+.cells{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.cell{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;font-size:14px}
+.cell code{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.runs{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}
+.runs i{width:10px;height:10px;border-radius:2.5px;background:var(--paper-2);border:1px solid var(--rule)}
+.runs i.done{background:var(--go);border-color:var(--go)}.runs i.run{background:var(--wait);border-color:var(--wait)}.runs i.fail{background:var(--stop);border-color:var(--stop)}
+.exp-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--rule);padding-top:12px;gap:10px;flex-wrap:wrap}
+.hchips{display:flex;gap:6px;flex-wrap:wrap}
+.hchips a{font-family:var(--mono);font-size:11.5px;text-decoration:none;border:1px solid var(--rule);border-radius:5px;padding:2px 7px;color:var(--ink-2);background:#fff}
+.hchips a:hover{border-color:var(--c);color:var(--c)}
+.prog{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.prog b{color:var(--ink);font-weight:600}
+.runkey{display:flex;gap:16px;font-size:13px;color:var(--ink-2);margin:-14px 0 24px;flex-wrap:wrap}
+.runkey i{width:10px;height:10px;border-radius:2.5px;display:inline-block;margin-right:6px;vertical-align:-1px;border:1px solid var(--rule);background:var(--paper-2)}
+
+/* evidence */
+.trail{position:relative;margin-left:8px}
+.trail::before{content:"";position:absolute;left:21px;top:6px;bottom:6px;width:4px;background:repeating-linear-gradient(180deg,var(--line-y) 0 14px,transparent 14px 24px)}
+.ev{display:grid;grid-template-columns:46px 150px 1fr 1fr;gap:20px;align-items:start;padding:18px 0;position:relative}
+.ev+.ev{border-top:1px solid var(--rule)}
+.ev .pin{width:46px;height:46px;border-radius:50%;background:var(--asphalt);color:var(--line-y);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:14px;position:relative;z-index:1;border:4px solid var(--paper)}
+.ev .when{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);padding-top:6px}
+.ev .when b{display:block;color:var(--ink);font-family:var(--sans);font-weight:800;font-size:16px;letter-spacing:0;margin-top:2px}
+.ev .found{font-family:var(--serif);font-size:18px;line-height:1.4}
+.ev .found mark{white-space:nowrap;background:none;font-family:var(--mono);font-size:15.5px;font-weight:600;color:var(--ink);box-shadow:inset 0 -.45em 0 rgba(242,179,61,.45);padding:0 2px}
+.ev .so{font-size:15px;color:var(--ink-2);padding-left:18px;border-left:3px solid var(--go);line-height:1.45}
+.ev .so::before{content:"So we";display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--go);margin-bottom:3px}
+
+/* board */
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.col{border-radius:14px;padding:20px;border:1px solid var(--rule);background:var(--card)}
+.col h3{margin:0 0 12px;font-size:15px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.col h3 i{width:12px;height:12px;border-radius:50%}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.col li{font-size:15px;line-height:1.4;padding-left:20px;position:relative;color:var(--ink-2)}
+.col li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:2px;background:var(--ink-3)}
+.col.done li::before{content:"✓";background:none;top:0;color:var(--go);font-weight:900}
+.col.now{background:var(--asphalt);color:var(--line-w);border-color:var(--asphalt)}
+.col.now li{color:#D9D5CB}.col.now li::before{background:var(--line-y)}
+
+footer{margin-top:90px;background:var(--asphalt);color:#A7A39A;padding:34px 0 40px;font-size:14px;border-top:3px solid var(--line-y)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer b{color:#fff}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.hero .rv{transition-delay:calc(var(--d,0)*90ms)}
+
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr}.junction{max-width:360px}
+  .pillars,.board{grid-template-columns:1fr}
+  .exps{grid-template-columns:1fr}
+  .inside{grid-template-columns:1fr}
+  .tests{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .road{display:none}
+  .stops{grid-template-columns:1fr;gap:0;border-left:4px solid var(--asphalt);margin-left:22px}
+  .stop{display:grid;grid-template-columns:60px 1fr;padding:0 0 18px}
+  .stop .post{margin:0 0 0 -25px}
+  .stop>div:not(.post){grid-column:2}
+  .sec-head .sign{justify-self:start}
+  .ev{grid-template-columns:46px 1fr}.ev .found,.ev .so{grid-column:2}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sec-head{grid-template-columns:1fr}.sec-head p{grid-column:1}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="brand"><i>J</i>Junction study</div>
+  <div class="links">
+    <a href="#route">Route</a><a href="#prove">What we test</a><a href="#experiments">Experiments</a><a href="#learned">What we learned</a><a href="#board">Progress</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <div class="status-pill rv" style="--d:0"><span class="dot"></span><span id="stage"></span></div>
+    <h1 class="rv" style="--d:1">What makes learned drivers <em>negotiate</em> at unsignalised junctions?</h1>
+    <p class="lede rv" style="--d:2">It depends on <b class="k-knows">what each car can know</b>, <b class="k-told">what it is told</b>, and <b class="k-meets">whom it meets</b>. Six experiments test those three ideas on procedurally generated T and X junctions.</p>
+    <div class="stats rv" style="--d:3" id="stats"></div>
+  </div>
+  <div class="rv" style="--d:2">
+    <svg class="junction" viewBox="0 0 400 400" role="img" aria-labelledby="jt">
+      <title id="jt">Three cars take turns crossing an X junction while corner buildings hide them from each other</title>
+      <defs>
+        <clipPath id="clip"><rect width="400" height="400" rx="22"/></clipPath>
+        <pattern id="grit" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#2A2C30"/><circle cx="1.5" cy="2" r=".6" fill="#33363B"/><circle cx="4.5" cy="4.6" r=".5" fill="#25272B"/></pattern>
+      </defs>
+      <g clip-path="url(#clip)">
+        <rect width="400" height="400" fill="#131416"/>
+        <rect x="0" y="150" width="400" height="100" fill="url(#grit)"/>
+        <rect x="150" y="0" width="100" height="400" fill="url(#grit)"/>
+        <path d="M150 150h100v100h-100z" fill="url(#grit)"/>
+        <g fill="#2A2C30"><path d="M150 138a12 12 0 0 1-12 12h12z"/><path d="M262 150a12 12 0 0 1-12-12v12z"/><path d="M250 262a12 12 0 0 1 12-12h-12z"/><path d="M138 250a12 12 0 0 1 12 12v-12z"/></g>
+        <g stroke="#F2B33D" stroke-width="2" stroke-dasharray="0">
+          <line x1="0" y1="199" x2="132" y2="199"/><line x1="0" y1="201" x2="132" y2="201"/>
+          <line x1="268" y1="199" x2="400" y2="199"/><line x1="268" y1="201" x2="400" y2="201"/>
+          <line x1="199" y1="0" x2="199" y2="132"/><line x1="201" y1="0" x2="201" y2="132"/>
+          <line x1="199" y1="268" x2="199" y2="400"/><line x1="201" y1="268" x2="201" y2="400"/>
+        </g>
+        <g stroke="#EDEAE2" stroke-width="1.6" stroke-dasharray="10 9" opacity=".7">
+          <line x1="0" y1="175" x2="132" y2="175"/><line x1="0" y1="225" x2="132" y2="225"/>
+          <line x1="268" y1="175" x2="400" y2="175"/><line x1="268" y1="225" x2="400" y2="225"/>
+          <line x1="175" y1="0" x2="175" y2="132"/><line x1="225" y1="0" x2="225" y2="132"/>
+          <line x1="175" y1="268" x2="175" y2="400"/><line x1="225" y1="268" x2="225" y2="400"/>
+        </g>
+        <g stroke="#EDEAE2" stroke-width="4">
+          <line x1="134" y1="202" x2="134" y2="250"/><line x1="266" y1="150" x2="266" y2="198"/>
+          <line x1="202" y1="266" x2="250" y2="266"/><line x1="150" y1="134" x2="198" y2="134"/>
+        </g>
+        <g fill="#26282C" stroke="#3A3D42" stroke-width="1">
+          <rect x="22" y="22" width="104" height="104" rx="3"/><rect x="274" y="22" width="104" height="104" rx="3"/>
+          <rect x="274" y="274" width="104" height="104" rx="3"/><rect x="22" y="274" width="104" height="104" rx="3"/>
+        </g>
+        <g fill="#30333A"><rect x="34" y="34" width="36" height="22" rx="2"/><rect x="78" y="70" width="36" height="44" rx="2"/><rect x="286" y="286" width="44" height="30" rx="2"/><rect x="330" y="330" width="36" height="36" rx="2"/><rect x="286" y="40" width="80" height="20" rx="2"/><rect x="40" y="300" width="20" height="66" rx="2"/></g>
+        <line class="sight" x1="128" y1="212" x2="214" y2="272" stroke="#F2B33D" stroke-width="1.4" stroke-dasharray="3 4"/>
+        <g class="car carA"><rect x="98" y="205" width="30" height="15" rx="4" fill="#4F8EDB"/><rect x="117" y="207" width="7" height="11" rx="2" fill="#173A66" opacity=".7"/></g>
+        <g class="car carB"><rect x="207" y="272" width="15" height="30" rx="4" fill="#E2A93A"/><rect x="209" y="276" width="11" height="7" rx="2" fill="#5B3D08" opacity=".7"/></g>
+        <g class="car carC"><rect x="272" y="155" width="30" height="15" rx="4" fill="#C062A0"/><rect x="276" y="157" width="7" height="11" rx="2" fill="#4A1638" opacity=".7"/></g>
+      </g>
+    </svg>
+    <div class="legend-cars"><span style="color:#7DB0EE">knows</span><span style="color:#F0C46B">is told</span><span style="color:#E08BC0">meets</span><span style="color:#F2B33D;opacity:.9">dashed: line of sight</span></div>
+  </div>
+</div></header>
+
+<main>
+<section id="route"><div class="wrap">
+  <div class="sec-head rv"><span class="sign">01</span><h2>The route</h2><p>Where the study is now, and the gate each stage has to pass before the next one starts.</p></div>
+  <div class="route rv">
+    <div class="road"><div class="done" id="roadDone"></div></div>
+    <div class="stops" id="stops"></div>
+  </div>
+  <div class="inside rv" id="inside"></div>
+</div></section>
+
+<section id="prove"><div class="wrap">
+  <div class="sec-head rv"><span class="sign">02</span><h2>What we're trying to prove</h2><p>Three ideas, twelve testable hypotheses. Open any card to see how it is tested and what each outcome would mean for the field.</p></div>
+  <div class="lightkey rv">
+    <span><i style="background:#3A3C41"></i>not tested yet</span>
+    <span><i style="background:var(--wait)"></i>being tested</span>
+    <span><i style="background:var(--go)"></i>supported</span>
+    <span><i style="background:var(--stop)"></i>rejected</span>
+  </div>
+  <div class="pillars" id="pillars"></div>
+</div></section>
+
+<section id="experiments"><div class="wrap">
+  <div class="sec-head rv"><span class="sign">03</span><h2>The experiments</h2><p>Each square is one training run. Every comparison gets the same traffic schedule, the same 120 M car-steps, and the same seeds.</p></div>
+  <div class="runkey rv"><span><i></i>waiting</span><span><i style="background:var(--wait);border-color:var(--wait)"></i>running</span><span><i style="background:var(--go);border-color:var(--go)"></i>done</span><span><i style="background:var(--stop);border-color:var(--stop)"></i>failed</span></div>
+  <div class="exps" id="exps"></div>
+</div></section>
+
+<section id="learned"><div class="wrap">
+  <div class="sec-head rv"><span class="sign">04</span><h2>What we've learned so far</h2><p>Every finding came from a run or a measurement, and every one changed the study. This is how the research has moved.</p></div>
+  <div class="trail" id="trail"></div>
+</div></section>
+
+<section id="board"><div class="wrap">
+  <div class="sec-head rv"><span class="sign">05</span><h2>Done, now and next</h2></div>
+  <div class="board" id="boardCols"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div><b>Every number on this page is measured on our code or cited.</b> Nothing is estimated without saying so.</div>
+  <div class="mono" id="updated"></div>
+</div></footer>
+
+<script>
+/* ===== The only part to edit when the study moves ===== */
+const DATA = {
+  updated: "2026-11-06",
+  stage: "Phase 0 · plan v3 awaiting supervisor approval",
+  paper: "2027-01-11", abstract: "2027-01-04",
+  phases: [
+    {id:"✓", name:"Groundwork", status:"done", what:"Junction environment, first trained drivers, study plan", gate:"Plan reviewed by an independent A* reviewer"},
+    {id:"P0", name:"Build", status:"now", what:"New machinery, then ten smoke tests", gate:"G0: S1–S10 pass"},
+    {id:"P1", name:"Perception", status:"next", what:"Lidar and camera encoders pretrained", gate:"G1: encoder knows where the car is"},
+    {id:"P2", name:"Starters", status:"next", what:"A starter driver per architecture and seed", gate:"Turns left, straight, right ≥ 80%"},
+    {id:"P3", name:"Training", status:"next", what:"Pilot of 5 seeds, then 155 factor runs", gate:"Pilot fixes seed counts and margins"},
+    {id:"P4", name:"Evaluation", status:"next", what:"Held-out junctions, saturation test, cross-play", gate:"One harness for every run"},
+    {id:"P5", name:"Paper", status:"next", what:"Statistics, figures, writing", gate:"Abstract 4 Jan · paper 11 Jan"},
+  ],
+  smoke: [
+    {id:"S1", name:"Buildings block lidar as geometry predicts", where:"Mac", s:"todo"},
+    {id:"S2", name:"Lidar sees road edges and lane lines", where:"Mac", s:"todo"},
+    {id:"S3", name:"Training speed, MLP vs GRU", where:"cluster", s:"todo"},
+    {id:"S4", name:"Memory never leaks between cars", where:"Mac", s:"todo"},
+    {id:"S5", name:"Interaction detector classifies every scene", where:"Mac", s:"todo"},
+    {id:"S6", name:"Right-of-way bonus fires only when due", where:"Mac", s:"todo"},
+    {id:"S7", name:"Safety costs match hand calculations", where:"Mac", s:"todo"},
+    {id:"S8", name:"Driver personalities don't freeze", where:"Mac", s:"todo"},
+    {id:"S9", name:"Cameras render on a GPU node", where:"cluster GPU", s:"todo"},
+    {id:"S10", name:"New evaluation matches the old one", where:"cluster", s:"todo"},
+  ],
+  pillars: [
+    {key:"knows", label:"Idea 1", title:"What a car knows", text:"Does memory help when buildings hide other cars, and which sensor encoder works best?"},
+    {key:"told", label:"Idea 2", title:"What it is told", text:"An explicit right-of-way rule, or conventions left to emerge? And what do safety budgets cost?"},
+    {key:"meets", label:"Idea 3", title:"Whom it meets", text:"Hurried and cautious drivers on one road: separate networks, or one network that plays both?"},
+  ],
+  hyps: [
+    {id:"H1b", p:"knows", head:true, exp:"E1", claim:"Memory helps more the more the junction is hidden.", how:"GRU minus MLP clean share at the nearest buildings, minus the same gap with no buildings; must be above 0.", yes:"Memory is how learned drivers make up for what they cannot see: evidence for recurrent policies in occluded traffic.", no:"Whatever memory adds is not about hidden cars; occlusion needs a different fix (sensing, caution).", s:"untested", r:""},
+    {id:"H1a", p:"knows", exp:"E1", claim:"A memory policy negotiates more cleanly than a memoryless one, even one given its last four frames.", how:"Clean share of the GRU against an MLP and a 4-frame MLP, held-out junctions.", yes:"Negotiation needs more than a short look-back.", no:"Four frames are enough: a cheaper policy does the job.", s:"untested", r:""},
+    {id:"H6a", p:"knows", exp:"E6", claim:"A self-attention lidar encoder beats an MLP encoder with the same data and training.", how:"Both frozen and pretrained on the same frames and heads; only the architecture differs.", yes:"Bearing-aware attention is worth its cost for driving lidar.", no:"Architecture matters less than pretraining.", s:"untested", r:""},
+    {id:"H6b", p:"knows", exp:"E6", claim:"A pretrained encoder beats learning straight from raw lidar returns.", how:"Frozen pretrained transformer against a linear layer learned by RL.", yes:"Pretraining 'where am I' pays off in multi-agent driving.", no:"RL learns its own features well enough.", s:"untested", r:""},
+    {id:"H2a", p:"told", head:true, exp:"E2", claim:"A right-of-way reward changes how many cars the junction can serve.", how:"Capacity in a saturation test (every lot always has a car waiting), two-sided test.", yes:"Telling drivers the rule changes the junction's throughput, not just their manners.", no:"Fleets reach the same capacity on their own.", s:"untested", r:""},
+    {id:"H2b", p:"told", exp:"E2", claim:"With the rule, more interactions end cleanly, without fewer cars arriving.", how:"Clean share of contested interactions (yields count as clean); arrival must not drop.", yes:"The rule makes encounters safer at no cost to flow.", no:"Emergent conventions are already as clean.", s:"untested", r:""},
+    {id:"H2c", p:"told", exp:"E2", claim:"The rule costs nothing in arrivals or delay.", how:"Equivalence test: arrival within ±2 points, delay within ±10%.", yes:"A free safety gain.", no:"The rule trades flow for order; we measure how much.", s:"untested", r:""},
+    {id:"H3a", p:"told", exp:"E3", claim:"Tighter safety budgets cut tailgating and rear-end crashes.", how:"Trend over four budgets (75, 50, 25, 10% of the base cost), 20 runs.", yes:"Budgets steer behaviour as designed; then we ask when they freeze the junction.", no:"The constraint method itself fails in a many-car fleet.", s:"untested", r:""},
+    {id:"H5a", p:"meets", head:true, exp:"E5", claim:"One personality-conditioned policy drives each profile as well as a dedicated network.", how:"Equivalence within ±3 points against two networks trained together in one fleet.", yes:"No 'diversity tax' at junctions: one network can serve many driver types.", no:"Confirms a diversity tax in negotiation, with its size.", s:"untested", r:""},
+    {id:"H5b", p:"meets", exp:"E5", claim:"The conditioned policy's driving moves with its caution and urgency inputs.", how:"Behaviour across a grid of caution and urgency values.", yes:"The personality inputs are real controls, not decoration.", no:"The policy ignores who it is told to be.", s:"untested", r:""},
+    {id:"H4a", p:"meets", exp:"E4", claim:"In mixed traffic, hurried drivers finish trips faster than cautious ones.", how:"Paired within each run, mixes of 50/50 and 25/75.", yes:"Personalities survive contact with each other.", no:"Traffic levels everyone to one pace.", s:"untested", r:""},
+    {id:"H4b", p:"meets", exp:"E4", claim:"Cautious drivers have fewer collisions per 100 trips.", how:"Same mixed-traffic runs.", yes:"Caution buys safety, and we can see who pays for the hurry.", no:"Caution alone does not protect a driver.", s:"untested", r:""},
+  ],
+  exps: [
+    {id:"E1", p:"knows", title:"Memory under occlusion", q:"Does a memory help, and more when buildings hide traffic?", paper:"main text",
+      cells:[["B","GRU memory (base)",10],["E1a","MLP, no memory",10],["E1b","MLP with last 4 frames",10]], hyps:["H1b","H1a"]},
+    {id:"E2", p:"told", title:"Right of way", q:"Does an explicit priority rule beat emergent conventions?", paper:"main text",
+      cells:[["E2a","GRU + rule (b = 2)",10],["E12","MLP + rule",10],["E2b","GRU + stronger rule (b = 4)",5]], hyps:["H2a","H2b","H2c"]},
+    {id:"E3", p:"told", title:"Safety budgets", q:"How do budgets on following gap and speed trade safety against flow?", paper:"appendix",
+      cells:[["E3a–d","PID-Lagrangian, 4 budgets",20],["E3e–g","Fixed penalty, 3 weights",15]], hyps:["H3a"]},
+    {id:"E4", p:"meets", title:"Mixed drivers", q:"When hurried and cautious drivers share a road, who wins, and at whose cost?", paper:"main text",
+      cells:[["E4c","Two networks trained together",10],["E4a","Hurried fleet alone",5],["E4b","Cautious fleet alone",5]], hyps:["H4a","H4b"]},
+    {id:"E5", p:"meets", title:"One policy, many drivers", q:"Can one conditioned network match separate ones?", paper:"main text",
+      cells:[["E5","Conditioned on caution, urgency",10]], hyps:["H5a","H5b"]},
+    {id:"E6", p:"knows", title:"Sensing", q:"Which lidar encoder works best, and what does a camera add?", paper:"appendix",
+      cells:[["E6d","Frozen MLP encoder",10],["E6a","Raw lidar, learned by RL",10],["E6b","Encoder + camera",5],["E6c","Raw lidar + camera",5],["R","Hand-coded reference",5]], hyps:["H6a","H6b"]},
+  ],
+  runs: {}, /* e.g. "E1": {done:3, running:2, failed:0} */
+  findings: [
+    {n:1, date:"29 Oct", run:"Local runs", found:"Drivers learned to stand still. Throttle noise braked at <mark>0.9 g</mark> but accelerated at only <mark>0.25 g</mark>, so runs that had reached <mark>59%</mark> arrivals collapsed into parking.", so:"lowered the throttle noise, gave untrained cars a gentle push forward, and used larger training batches."},
+    {n:2, date:"30 Oct", run:"ppo1", found:"<mark>95%</mark> of cars arrived on the straight road, then the throttle drifted to zero and the fleet stopped.", so:"added a mastery rule (move on at 90%) and a guard that restores the best checkpoint if success collapses."},
+    {n:3, date:"30 Oct", run:"ppo2", found:"Stuck at <mark>~38%</mark> at the junction: straight on <mark>100%</mark> arrived, left turns <mark>100%</mark> crashed, right turns <mark>0%</mark> arrived. It knew the turn but never tried one.", so:"gave cars a turn signal and kept a minimum of steering exploration at the junction."},
+    {n:4, date:"31 Oct", run:"ppo3b", found:"Climbed through all six traffic levels; best <mark>84%</mark> arrivals at up to <mark>1,800 veh/h</mark> per lot, after <mark>300 M</mark> car-steps. Arrival also swung between <mark>59%</mark> and <mark>84%</mark> inside one run.", so:"made this the recipe for every starter driver, and added a pilot so seed counts come from measured spread."},
+    {n:5, date:"3 Nov", run:"Camera test", found:"A camera on every car is <mark>9–21×</mark> slower than lidar: <mark>96</mark> against <mark>~2,000</mark> car-steps per second with ~32 cars.", so:"kept the camera to one experiment and let a lidar encoder tell each car where it is."},
+    {n:6, date:"3 Nov", run:"Building test", found:"A corner building blocks lidar rays where geometry says it should: hit fraction <mark>0.419</mark> against <mark>0.412</mark> predicted.", so:"turned occlusion into a controlled dose (none, far, mid, near) for the memory experiment."},
+    {n:7, date:"3 Nov", run:"Independent review", found:"A strict reviewer found <mark>9</mark> major problems in plan v1, e.g. weaker setups spending longer on easy traffic.", so:"gave every comparison one fixed schedule, measured capacity in a saturation test, and paired the conditioned policy with a co-trained rival."},
+    {n:8, date:"6 Nov", run:"Plan v3", found:"Open gaps: the pilot ran before its inputs existed, and validation layouts overlapped training.", so:"moved the pilot after the starters, split layouts by seed (train, validation, held-out), and kept 45–55° junctions unseen."},
+  ],
+  board: {
+    done:["Procedural T/X junction environment with parking-lot traffic","Reward, density curriculum, collapse guard","ppo3b: 84% arrivals in the densest traffic","Five research tracks, plan v2, independent review","Plan v3 decisions on every open contradiction"],
+    now:["Plan v3 with the supervisor: decisions Q1–Q18","Phase 0 build planned: scripted scenes, trajectory recorder, corner buildings (S1)"],
+    next:["Lidar channels (S2), interaction detector (S5), right of way (S6)","Remaining smoke tests, then perception pretraining","Starter drivers, then the pilot"],
+  },
+};
+/* ====================================================== */
+
+const $ = s => document.querySelector(s);
+const day = d => new Date(d + "T00:00:00");
+const today = new Date(); today.setHours(0,0,0,0);
+const runsTotal = DATA.exps.reduce((a,e)=>a+e.cells.reduce((b,c)=>b+c[2],0),0);
+const runsDone = Object.values(DATA.runs).reduce((a,r)=>a+(r.done||0),0);
+const settled = DATA.hyps.filter(h=>["supported","rejected","mixed"].includes(h.s)).length;
+const daysLeft = Math.max(0, Math.round((day(DATA.paper)-today)/864e5));
+
+$("#stage").textContent = DATA.stage;
+$("#stats").innerHTML = [
+  [`${DATA.phases.find(p=>p.status==="now").id}<small> / P5</small>`,"current phase"],
+  [`${runsDone}<small> / ${runsTotal}</small>`,"training runs done"],
+  [`${settled}<small> / ${DATA.hyps.length}</small>`,"hypotheses settled"],
+  [`${daysLeft}`,"days to the paper"],
+].map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+
+const tagOf = {done:"Done", now:"You are here", next:"Ahead"};
+$("#stops").innerHTML = DATA.phases.map(p=>`<div class="stop ${p.status}"><div class="post">${p.id}</div><div>
+  <div class="nm">${p.name}</div><div class="tag">${tagOf[p.status]}</div><div class="wh">${p.what}</div>
+  <div class="gate"><b>Gate</b> · ${p.gate}</div></div></div>`).join("");
+const nowIdx = DATA.phases.findIndex(p=>p.status==="now");
+
+const sDone = DATA.smoke.filter(t=>t.s==="pass").length;
+$("#inside").innerHTML = `<div><div class="eyebrow">Inside phase 0</div><h3>${sDone} of ${DATA.smoke.length} smoke tests passed</h3>
+  <p>Each test proves one piece of new machinery works before any long run spends cluster time.</p>
+  <div class="deadline"><span class="chip">Abstract ${day(DATA.abstract).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</span><span class="chip hot">Paper ${day(DATA.paper).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</span></div></div>
+  <div class="tests">${DATA.smoke.map(t=>`<div class="t ${t.s}"><b>${t.id}<i></i></b>${t.name}<span class="where">${t.where}</span></div>`).join("")}</div>`;
+
+$("#pillars").innerHTML = DATA.pillars.map(p=>`<div class="p-${p.key}">
+  <div class="pillar-head rv"><div class="q">${p.label}</div><h3>${p.title}</h3><p>${p.text}</p></div>
+  <div class="hyps">${DATA.hyps.filter(h=>h.p===p.key).map(h=>`<details class="h rv" id="${h.id}"><summary><div>
+    <div class="hid"><b>${h.id}</b>${h.head?'<span class="headline">Headline</span>':'<span class="sec">'+h.exp.replace("E","Exp ")+'</span>'}</div>
+    <div class="claim">${h.claim}</div>
+    <div class="res"><b>Result</b>${h.r || "Not tested yet"}</div></div>
+    <div class="light ${h.s}" title="${h.s}"><i></i><i></i><i></i></div></summary>
+    <div class="more"><dl><dt>Tested by</dt><dd><a href="#${h.exp}">${h.exp.replace("E","Experiment ")}</a> · ${h.how}</dd>
+    <dt>If it holds</dt><dd class="if-yes">${h.yes}</dd><dt>If it fails</dt><dd class="if-no">${h.no}</dd></dl></div></details>`).join("")}</div></div>`).join("");
+
+const colOf = {knows:"var(--knows)", told:"var(--told)", meets:"var(--meets)"};
+$("#exps").innerHTML = DATA.exps.map(e=>{
+  const r = DATA.runs[e.id]||{}; let left = {done:r.done||0, run:r.running||0, fail:r.failed||0};
+  const total = e.cells.reduce((a,c)=>a+c[2],0);
+  const cells = e.cells.map(([code,name,n])=>{let sq="";for(let i=0;i<n;i++){let k="";for(const s of ["done","run","fail"]) if(!k&&left[s]>0){k=s;left[s]--}sq+=`<i class="${k}"></i>`}
+    return `<div class="cell"><code>${code}</code><span>${name}</span><span class="runs">${sq}</span></div>`}).join("");
+  return `<article class="exp rv" id="${e.id}" style="--c:${colOf[e.p]}"><div class="exp-top"><span class="plate">${e.id.replace("E","EXP ")}</span><span class="sec">${e.paper}</span></div>
+    <h3>${e.title}</h3><p class="q">${e.q}</p><div class="cells">${cells}</div>
+    <div class="exp-foot"><div class="hchips">${e.hyps.map(h=>`<a href="#${h}" data-h="${h}">${h}</a>`).join("")}</div><div class="prog"><b>${r.done||0}</b> / ${total} runs</div></div></article>`}).join("");
+document.querySelectorAll(".hchips a").forEach(a=>a.addEventListener("click",()=>{const d=document.getElementById(a.dataset.h);if(d)d.open=true}));
+
+$("#trail").innerHTML = DATA.findings.map(f=>`<div class="ev rv"><div class="pin">${f.n}</div>
+  <div class="when">${f.date}<b>${f.run}</b></div><div class="found">${f.found}</div><div class="so">${f.so}</div></div>`).join("");
+
+$("#boardCols").innerHTML = [["done","Done","var(--go)"],["now","Now","var(--line-y)"],["next","Next","var(--ink-3)"]].map(([k,t,c])=>
+  `<div class="col ${k} rv"><h3><i style="background:${c}"></i>${t}</h3><ul>${DATA.board[k].map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+
+$("#updated").textContent = "Updated " + day(DATA.updated).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+
+const reveal = () => document.querySelectorAll(".rv:not(.in)").forEach(el=>{if(el.getBoundingClientRect().top < innerHeight*0.94) el.classList.add("in")});
+addEventListener("scroll", reveal, {passive:true}); addEventListener("resize", reveal); addEventListener("load", reveal); reveal();
+requestAnimationFrame(()=>{document.querySelectorAll(".hero .rv").forEach(el=>el.classList.add("in"));
+  const stops=[...document.querySelectorAll(".stop .post")]; const road=$(".road");
+  if(stops[nowIdx]&&road){const rr=road.getBoundingClientRect(),pr=stops[nowIdx].getBoundingClientRect();
+    setTimeout(()=>$("#roadDone").style.width=(pr.left+pr.width/2-rr.left)+"px",400)}});
+</script>
+</body>
+</html>
